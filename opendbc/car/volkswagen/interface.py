@@ -13,6 +13,7 @@ class CarInterface(CarInterfaceBase):
   def _get_params(ret: structs.CarParams, candidate: CAR, fingerprint, car_fw, experimental_long, docs) -> structs.CarParams:
     ret.brand = "volkswagen"
     ret.radarUnavailable = True
+    
 
     if ret.flags & VolkswagenFlags.PQ:
       # Set global PQ35/PQ46/NMS parameters
@@ -20,7 +21,7 @@ class CarInterface(CarInterfaceBase):
       ret.enableBsm = 0x3BA in fingerprint[0]  # SWA_1
 
       if 0x440 in fingerprint[0] or docs:  # Getriebe_1
-        ret.transmissionType = TransmissionType.automatic
+        ret.transmissionType = TransmissionType.manual
       else:
         ret.transmissionType = TransmissionType.manual
 
@@ -42,7 +43,7 @@ class CarInterface(CarInterfaceBase):
       ret.safetyConfigs = [get_safety_config(structs.CarParams.SafetyModel.volkswagenMeb)]
       ret.enableBsm = 0x24C in fingerprint[0]  # MEB_Side_Assist_01
       ret.steerControlType = structs.CarParams.SteerControlType.angle
-      ret.transmissionType = TransmissionType.automatic
+      ret.transmissionType = TransmissionType.manual
 
       if any(msg in fingerprint[1] for msg in (0x520, 0x86, 0xFD, 0x13D)):  # Airbag_02, LWI_01, ESP_21, QFK_01
         ret.networkLocation = NetworkLocation.gateway
@@ -55,7 +56,7 @@ class CarInterface(CarInterfaceBase):
       ret.enableBsm = 0x30F in fingerprint[0]  # SWA_01
 
       if 0xAD in fingerprint[0] or docs:  # Getriebe_11
-        ret.transmissionType = TransmissionType.automatic
+        ret.transmissionType = TransmissionType.manual
       elif 0x187 in fingerprint[0]:  # Motor_EV_01
         ret.transmissionType = TransmissionType.direct
       else:
